@@ -5,12 +5,14 @@
 | Application Routes
 |--------------------------------------------------------------------------
 |
-| Here is where you can register all of the routes for an application.
-| It is a breeze. Simply tell Lumen the URIs it should respond to
-| and give it the Closure to call when that URI is requested.
+| Added prefix of v1.0 as child group of prefix api in order to allow
+| future versions to maintain api prefix without need to redeclare it
 |
 */
 
-$router->get('/', function () use ($router) {
-    return $router->app->version();
+
+$router->group(['prefix' => 'api'], function () use ($router) {
+    $router->group(['prefix' => 'v1.0'], function () use ($router) {
+        $router->post('/parseid3', 'ID3\ID3Controller@post');
+    });
 });

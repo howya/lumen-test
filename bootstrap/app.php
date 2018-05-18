@@ -1,9 +1,9 @@
 <?php
 
-require_once __DIR__.'/../vendor/autoload.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
 try {
-    (new Dotenv\Dotenv(__DIR__.'/../'))->load();
+    (new Dotenv\Dotenv(__DIR__ . '/../'))->load();
 } catch (Dotenv\Exception\InvalidPathException $e) {
     //
 }
@@ -20,7 +20,7 @@ try {
 */
 
 $app = new Laravel\Lumen\Application(
-    realpath(__DIR__.'/../')
+    realpath(__DIR__ . '/../')
 );
 
 // $app->withFacades();
@@ -47,6 +47,18 @@ $app->singleton(
     Illuminate\Contracts\Console\Kernel::class,
     App\Console\Kernel::class
 );
+
+/**
+ * Binding the concrete ID3 Adapter (as set in config) to the ID3 Interface
+ *
+ * If implementation binding were required at runtime then the class could be
+ * driven via a factory driven by configuration or required logic.
+ */
+$app->bind(App\ID3\Contracts\ID3Contract::class, function ($app) {
+    $class = config('id3.id3_adapter_path');
+    return new $class();
+});
+
 
 /*
 |--------------------------------------------------------------------------
@@ -96,7 +108,9 @@ $app->singleton(
 $app->router->group([
     'namespace' => 'App\Http\Controllers',
 ], function ($router) {
-    require __DIR__.'/../routes/web.php';
+    require __DIR__ . '/../routes/web.php';
 });
+
+$app->configure('id3');
 
 return $app;
