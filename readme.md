@@ -26,4 +26,4 @@ The getID3 functionality has been implemented via an adapter. The adapter is bou
 
 Some issues were had with JSON encoding the getID3 results due to some result array string values not being UTF8 encoded. The workaround and explanation for this is documented within ```\App\ID3\ID3Adapter``` class.
 
-Testing is incomplete. I ran into issues with trying to create and post a multipart/form-data request within PHPUnit. This is down to my lack of familiarity with Lumen. This can be seen in ```\Tests\Feature\ID3FeatureTest@testFileKeyPresentWithFile_ReturnsID3JSON```
+Testing is incomplete and generates 1 failure from 20 assertions. I ran into issues with trying to create and post a multipart/form-data request within PHPUnit. This is down to my lack of familiarity with Lumen. This can be seen in ```\Tests\Feature\ID3FeatureTest@testFileKeyPresentWithFile_ReturnsID3JSON```
