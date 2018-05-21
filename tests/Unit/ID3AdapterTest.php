@@ -30,17 +30,12 @@ class ID3AdapterTest extends TestCase
      */
     public function testWithMediaFile_resolvesToJSONWithoutErrorJSON()
     {
-        $result = $this->ID3Adapter->analyze(__DIR__ . '/../Fixtures/Files/SampleVideo_1280x720_1mb.mp4');
+        $asArray = $this->ID3Adapter->analyze(__DIR__ . '/../Fixtures/Files/SampleVideo_1280x720_1mb.mp4');
 
-        $this->assertJson($result);
+        $hasIDVersionKey = array_key_exists('GETID3_VERSION', json_decode($asArray['result'], true));
 
-        $asArray = json_decode($result);
-
-        $hasError = array_key_exists('error', $asArray);
-
-        $hasIDVersionKey = array_key_exists('GETID3_VERSION', $asArray);
-
-        $this->assertFalse($hasError);
+        $this->assertJson($asArray['result']);
+        $this->assertTrue($asArray['status']);
 
         $this->assertTrue($hasIDVersionKey);
     }
@@ -52,19 +47,14 @@ class ID3AdapterTest extends TestCase
      */
     public function testWithNonMediaFile_resolvesToErrorJSON()
     {
-        $result = $this->ID3Adapter->analyze(__DIR__ . '/../Fixtures/Files/test.txt');
+        $asArray = $this->ID3Adapter->analyze(__DIR__ . '/../Fixtures/Files/test.txt');
 
-        $this->assertJson($result);
+        $hasIDVersionKey = array_key_exists('GETID3_VERSION', json_decode($asArray['result'], true));
 
-        $asArray = json_decode($result);
+        $this->assertJson($asArray['result']);
+        $this->assertFalse($asArray['status']);
 
-        $hasError = array_key_exists('error', $asArray);
-
-        $hasIDVersionKey = array_key_exists('GETID3_VERSION', $asArray);
-
-        $this->assertTrue($hasError);
-
-        $this->assertTrue($hasIDVersionKey);
+        $this->assertFalse($hasIDVersionKey);
     }
 
     /**
@@ -74,18 +64,13 @@ class ID3AdapterTest extends TestCase
      */
     public function testWithFileNotExists_resolvesToErrorJSON()
     {
-        $result = $this->ID3Adapter->analyze(__DIR__ . '/../Fixtures/Files/notexists.txt');
+        $asArray = $this->ID3Adapter->analyze(__DIR__ . '/../Fixtures/Files/notexists.txt');
 
-        $this->assertJson($result);
+        $hasIDVersionKey = array_key_exists('GETID3_VERSION', json_decode($asArray['result'], true));
 
-        $asArray = json_decode($result);
+        $this->assertJson($asArray['result']);
+        $this->assertFalse($asArray['status']);
 
-        $hasError = array_key_exists('error', $asArray);
-
-        $hasIDVersionKey = array_key_exists('GETID3_VERSION', $asArray);
-
-        $this->assertTrue($hasError);
-
-        $this->assertTrue($hasIDVersionKey);
+        $this->assertFalse($hasIDVersionKey);
     }
 }

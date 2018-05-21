@@ -58,7 +58,7 @@ class Handler extends ExceptionHandler
                 return $this->jsonResponse('Not allowed in this context', false, $e->getStatusCode());
                 break;
             case HttpException::class:
-                return $this->jsonResponse('This operation is forbidden', false, $e->getStatusCode());
+                return $this->jsonResponse($e->getMessage(), false, $e->getStatusCode());
                 break;
             case ValidationException::class:
                 return $this->jsonResponse('Unprocessable entity', $e->response->original, $e->getCode());

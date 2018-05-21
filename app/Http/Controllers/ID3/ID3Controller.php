@@ -58,13 +58,18 @@ class ID3Controller extends Controller
         $processResult = $this->ID3Manager->analyze($fileLocation);
 
         //Delete the file after processing
-        unlink($fileLocation);
+        try {
+            unlink($fileLocation);
+        } catch (\Exception $e) {
+            //log the failure to delete file
+        }
 
-        if ($processResult) {
+        if ($processResult['status']) {
             //Return a json response with code HTTP 200
-            return response($processResult, 200, ['Content-Type' => 'application/json']);
+            return response($processResult['result'], 200, ['Content-Type' => 'application/json']);
         } else {
-            throw new HttpException(422, "Unable to process file for ID3 information.");
+            //Return a json response with code HTTP 422 and failure message
+            throw new HttpException(422, $processResult['result']);
         }
     }
 }
