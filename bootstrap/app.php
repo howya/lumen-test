@@ -54,8 +54,8 @@ $app->singleton(
  * If implementation binding were required at runtime then the class could be
  * driven via a factory driven by configuration or required logic.
  */
-$app->bind(App\ID3\Contracts\ID3Contract::class, function ($app) {
-    $class = config('id3.id3_adapter_path');
+$app->bind(config('id3.driver.binding'), function ($app) {
+    $class = config('id3.driver.path');
     return new $class();
 });
 
