@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use Illuminate\Http\UploadedFile;
 use Tests\TestCase;
 use App\ID3\ID3Adapter;
 
@@ -103,14 +104,18 @@ class ID3FeatureTest extends TestCase
      */
     public function testFileKeyPresentWithFile_ReturnsID3JSON()
     {
-        $headers = ["Content-Type" => "multipart/form-data"];
-        $payload = [
-            "file" => new \Illuminate\Http\UploadedFile(__DIR__ . '/../Fixtures/Files/SampleVideo_1280x720_1mb.mp4',
-                'SampleVideo_1280x720_1mb.mp4', null, null, null, false)
-        ];
+        $fileName = 'SampleVideo_1280x720_1mb.mp4';
+        $filePath = __DIR__ . '/../Fixtures/Files/' . $fileName;
+        $copyPath = __DIR__ . '/../Fixtures/Files/Tmp' . $fileName;
 
-        $this->post('/api/v1.0/parseid3', $payload, $headers)
-            ->seeStatusCode(200);
+        copy($filePath, $copyPath);
+
+        $file = new UploadedFile($copyPath, $fileName, 'image/png', filesize($filePath), null, true);
+        $response = $this->call('POST', '/api/v1.0/parseid3', [], [], ['file' => $file],
+            ['Content-Type' => 'multipart/form-data', 'Accept' => 'application/json']);
+
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertJson($response->getContent());
 
     }
 
