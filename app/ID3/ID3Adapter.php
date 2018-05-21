@@ -35,8 +35,18 @@ class ID3Adapter implements ID3Contract
         //Convert any non UTF8 strings to UTF8 prior to JSON encode
         array_walk_recursive($processResult, '\App\ID3\ID3Adapter::encode_items');
 
-        //Return the JSON encoded result
-        return json_encode($processResult);
+        //Check for ID3 error message in parse result and return
+        if (array_key_exists('error', $processResult)) {
+            return [
+                'status' => false,
+                'result' => json_encode($processResult['error'])
+            ];
+        } else {
+            return [
+                'status' => true,
+                'result' => json_encode($processResult)
+            ];
+        }
     }
 
     /**
