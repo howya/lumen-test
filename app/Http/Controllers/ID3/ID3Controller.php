@@ -3,30 +3,29 @@
 namespace App\Http\Controllers\ID3;
 
 use App\Http\Controllers\Controller;
+use App\ID3\ID3Manager;
 use Illuminate\Http\Request;
 use App\ID3\Exceptions\InvalidFileException;
-use App\ID3\Contracts\ID3Contract;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class ID3Controller extends Controller
 {
     /**
-     * @var $ID3Adapter
+     * @var $ID3Manager
      */
-    private $ID3Adapter;
+    private $ID3Manager;
 
     /**
      * Create a new controller instance.
      *
-     * The ID3Adapter is loaded via the IOC which resolves the concretion from the
-     * ID3Contract binding (within app.php) as set in id3 config file.
+     * The ID3Manager provides a factory for ID3Drivers.
      * This enables dependency inversion.
      *
-     * @param ID3Contract $ID3Adapter
+     * @param ID3Manager $ID3Manager
      */
-    public function __construct(ID3Contract $ID3Adapter)
+    public function __construct()
     {
-        $this->ID3Adapter = $ID3Adapter;
+        $this->ID3Manager = new ID3Manager(app());
     }
 
     /**
@@ -56,7 +55,7 @@ class ID3Controller extends Controller
         $fileLocation = config('id3.file_storage') . '/' . $fileName;
 
         //Process the file with ID3 Adapter
-        $processResult = $this->ID3Adapter->analyze($fileLocation);
+        $processResult = $this->ID3Manager->analyze($fileLocation);
 
         //Delete the file after processing
         unlink($fileLocation);

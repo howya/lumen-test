@@ -48,17 +48,6 @@ $app->singleton(
     App\Console\Kernel::class
 );
 
-/**
- * Binding the concrete ID3 Adapter (as set in config) to the ID3 Interface
- *
- * If implementation binding were required at runtime then the class could be
- * driven via a factory driven by configuration or required logic.
- */
-$app->bind(App\ID3\Contracts\ID3Contract::class, function ($app) {
-    $class = config('id3.id3_adapter_path');
-    return new $class();
-});
-
 
 /*
 |--------------------------------------------------------------------------

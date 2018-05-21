@@ -11,7 +11,7 @@ Please ensure that the media file is associated with the form data key ```file``
 
 ## Installation
 
-To install, pull this repository and run ```composer install```
+To install, clone this repository and run ```composer install```
 
 
  
